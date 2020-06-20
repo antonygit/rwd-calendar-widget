@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta name="theme-color" content="#5aa74f" />
+      <meta name="msapplication-navbutton-color" content="#5aa74f" />
+      <meta name="apple-mobile-web-app-status-bar-style" content="#5aa74f" />
+      <title>rGuest Analyze</title>
+   </head>
+   <style>
+      .container{
+      display: flex;
+      flex-direction: column;
+      border: 1px solid rgb(212, 207, 207);
+      border-radius: 5px;
+      }
+      ul {list-style-type: none;}
+      body {font-family: Verdana, sans-serif;}
+      .month {
+      padding: 20px 20px;
+      background: #73ccdc;
+      text-align: center;
+      }
+      .month ul {
+      margin: 0;
+      padding: 0;
+      }
+      .month ul li {
+      color: #ffffff;
+      font-size: 20px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      }
+      .month .prev {
+      float: left;
+      padding-top: 10px;
+      cursor: pointer;
+      }
+      .month .next {
+      float: right;
+      padding-top: 10px;
+      cursor: pointer;
+      }
+      .weekdays {
+      margin: 0;
+      padding: 0px;
+      background-color: #e6f6f7;
+      display: grid;
+      grid-template-columns: auto auto auto auto auto auto auto;
+      }
+      .weekdays li {
+      display: inline-block;
+      width: 10.6%;
+      color: #213a3e;
+      text-align: center;
+      padding: 8px;
+      font-size: 14px;
+      justify-self: self-start;
+      }
+      .days {
+      background: #ffffff;
+      display: grid;
+      padding: 0px;
+      grid-template-columns: auto auto auto auto auto auto auto;
+      }
+      .days li {
+      list-style-type: none;
+      display: inline-block;
+      width: 13.6%;
+      margin-bottom: 12px;
+      font-size:18px;
+      color: #211b1b;
+      padding: 9px;
+      justify-self: self-start;
+      cursor: pointer;
+      }
+      .cal-month {
+      background: #fdfcfc;
+      display: grid;
+      padding: 14px;
+      grid-gap: 29px;
+      grid-template-columns: auto auto auto auto;
+      justify-content: space-between;
+      }
+      .cal-month > div {
+      width: 13.6%;
+      margin-bottom: 40px;
+      font-size:18px;
+      color: #4a4343;
+      padding: 0px;
+      cursor: pointer;
+      }
+      .active {
+      border-radius: 20%;
+      background: #F44336;
+      color: rgb(8, 8, 8) !important;
+      text-align: center;
+      width: 28px;
+      height: 24px;
+      line-height: 22px;
+      border: 1px solid #c1aeae;
+      }
+      .current{
+      border-radius: 20%;
+      background: #73ccdc;
+      border: 1px solid #dedada;
+      color: #0e0e0e !important;
+      text-align: center;
+      width: 24px;
+      height: 24px;
+      line-height: 22px;
+      }
+      .month-heade{
+      cursor: pointer;
+      }
+      @media only screen and (min-width: 650px)  {
+      .main {
+      display: grid;
+      grid-template-columns: 1fr 550px 1fr;
+      grid-template-rows: 3fr 50px;
+      }
+      .container {
+      grid-column: 2 / 3;
+      grid-row: 1 / 2;
+      }
+      }
+      .container-month--hide{
+      display: none;
+      }
+      .container-month--visible{
+      display: contents;
+      }
+      .container-days--hide{
+      display: none;
+      }
+      .container-days--visible{
+      display: contents;
+      }
+
+
+      .cal-year {
+      background: #fdfcfc;
+      display: grid;
+      padding: 14px;
+      grid-gap: 29px;
+      grid-template-columns: auto auto auto auto;
+      justify-content: space-between;
+      height: 40vh;
+      overflow: auto;
+      }
+      .cal-year > div {
+      width: 13.6%;
+      margin-bottom: 40px;
+      font-size:18px;
+      color: #4a4343;
+      padding: 0px;
+      cursor: pointer;
+      }
+
+      .container-year--hide{
+      display: none;
+      }
+      .container-year--visible{
+      display: contents;
+      }
+      .container-year--hide{
+      display: none;
+      }
+      .container-year--visible{
+      display: contents;
+      }
+
+      /* width */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+   </style>
+   <body>
+      <div class="main">
+         <div class="container">
+            <div class="month">
+               <ul>
+                  <li class="prev" id ="prev" onclick="prev()"><img src="left.png"></li>
+                  <li class="next" id="next"  onclick="next()"><img src="right.png"></li>
+                  <li>
+                     <div id="month" class="month-header" onclick="selectMonth()">  </div>
+                     <br>
+                     <span style="font-size:18px">
+                        <div id="year" onclick="selectYear()"></div>
+                     </span>
+                  </li>
+               </ul>
+            </div>
+            <div class="container-days container-days--visible" id ="daysContainer">
+               <ul class="weekdays">
+                  <li>Sun</li>
+                  <li>Mon</li>
+                  <li>Tue</li>
+                  <li>Wed</li>
+                  <li>Thu</li>
+                  <li>Fri</li>
+                  <li>Sat</li>
+               </ul>
+               <div onclick="clickDays()" id="days">
+                  <ul class="days" >
+                     <li>
+                        <div id="1"></div>
+                     </li>
+                     <li>
+                        <div id="2"></div>
+                     </li>
+                     <li>
+                        <div id="3"></div>
+                     </li>
+                     <li>
+                        <div id="4"></div>
+                     </li>
+                     <li>
+                        <div id="5"></div>
+                     </li>
+                     <li>
+                        <div id="6"></div>
+                     </li>
+                     <li>
+                        <div id="7"></div>
+                     </li>
+                     <li>
+                        <div id="8"></div>
+                     </li>
+                     <li>
+                        <div id ="9"></div>
+                     </li>
+                     <li>
+                        <div id ="10"></div>
+                     </li>
+                     <li>
+                        <div id ="11"></div>
+                     </li>
+                     <li>
+                        <div id ="12"></div>
+                     </li>
+                     <li>
+                        <div id ="13"  ></div>
+                     </li>
+                     <li>
+                        <div id ="14"></div>
+                     </li>
+                     <li>
+                        <div id ="15"></div>
+                     </li>
+                     <li>
+                        <div id ="16"></div>
+                     </li>
+                     <li>
+                        <div id ="17"></div>
+                     </li>
+                     <li>
+                        <div id ="18"></div>
+                     </li>
+                     <li>
+                        <div id ="19"></div>
+                     </li>
+                     <li>
+                        <div id ="20"></div>
+                     </li>
+                     <li>
+                        <div id ="21"></div>
+                     </li>
+                     <li>
+                        <div id ="22"></div>
+                     </li>
+                     <li>
+                        <div id ="23"></div>
+                     </li>
+                     <li>
+                        <div id ="24"></div>
+                     </li>
+                     <li>
+                        <div id ="25"></div>
+                     </li>
+                     <li>
+                        <div id ="26"></div>
+                     </li>
+                     <li>
+                        <div id ="27"></div>
+                     </li>
+                     <li>
+                        <div id ="28"></div>
+                     </li>
+                     <li>
+                        <div id ="29"></div>
+                     </li>
+                     <li>
+                        <div id ="30"></div>
+                     </li>
+                     <li>
+                        <div id ="31"></div>
+                     </li>
+                     <li>
+                        <div id ="32"></div>
+                     </li>
+                     <li>
+                        <div id ="33"></div>
+                     </li>
+                     <li>
+                        <div id ="34"></div>
+                     </li>
+                     <li>
+                        <div id ="35"></div>
+                     </li>
+                     <li>
+                        <div id ="36"></div>
+                     </li>
+                     <li>
+                        <div id ="37"></div>
+                     </li>
+                  </ul>
+               </div>
+            </div>
+            <div class="container-month container-month--hide"  id="monthContainer">
+               <div onclick="clickMonth()" id="calMonth" class="cal-month">
+                  <div id="jan" class="month-name">JAN</div>
+                  <div id="feb"  class="month-name">FEB</div>
+                  <div id="mar"  class="month-name">MAR</div>
+                  <div id="apr"  class="month-name">APR</div>
+                  <div id="may"  class="month-name">MAY</div>
+                  <div id="jun"  class="month-name">JUN</div>
+                  <div id="jul"  class="month-name">JUL</div>
+                  <div id="aug"  class="month-name">AUG</div>
+                  <div id ="sep"  class="month-name">SEP</div>
+                  <div id ="oct"  class="month-name">OCT</div>
+                  <div id ="nov"  class="month-name">NOV</div>
+                  <div id ="dec"  class="month-name">DEC</div>
+               </div>
+            </div>
+
+
+
+            <div class="container-year container-year--hide"  id="yearContainer">
+               <div onclick="clickYear()" id="calYear" class="cal-year">
+                  <div id="2011" class="year-name">2011</div>
+                  <div id="2012" class="year-name">2012</div>
+                  <div id="2013" class="year-name">2013</div>
+                  <div id="2014" class="year-name">2014</div>
+                  <div id="2015" class="year-name">2015</div>
+                  <div id="2016" class="year-name">2016</div>
+                  <div id="2017" class="year-name">2017</div>
+                  <div id="2018" class="year-name">2018</div>
+                  <div id="2019" class="year-name">2019</div>
+                  <div id="2020" class="year-name">2020</div>
+                  <div id="2021" class="year-name">2021</div>
+                  <div id="2022" class="year-name">2022</div>
+                  <div id="2011" class="year-name">2011</div>
+                  <div id="2012" class="year-name">2012</div>
+                  <div id="2013" class="year-name">2013</div>
+                  <div id="2014" class="year-name">2014</div>
+                  <div id="2015" class="year-name">2015</div>
+                  <div id="2016" class="year-name">2016</div>
+                  <div id="2017" class="year-name">2017</div>
+                  <div id="2018" class="year-name">2018</div>
+                  <div id="2019" class="year-name">2019</div>
+                  <div id="2020" class="year-name">2020</div>
+                  <div id="2021" class="year-name">2021</div>
+                  <div id="2022" class="year-name">2022</div>
+               </div>
+            </div>
+
+
+
+
+         </div>
+      </div>
+      </div>
+   </body>
+   <script src="cal.js"></script>
+</html>
